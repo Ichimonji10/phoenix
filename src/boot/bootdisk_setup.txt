@@ -1,0 +1,23 @@
+Bootdisk Setup
+This document gives instructions on how to set up a bootdisk for Phoenix.
+04-07-08
+
+Requirements:
+NASM
+Open Watcom
+floppy disk
+
+Instructions:
+* Put a floppy disk in the drive.
+* Navigate to the Phoenix src directory.
+* Type "wmake"
+* Navigate to the Phoenix src\boot directory.
+* Type "nasm boot.asm -o boot.bin".
+* Type "debug boot.bin".
+* Type "W 100 0 0 1".
+* Type "Q" for quit.
+* Type "wmake".
+* Type "..\tools\memalign loader.com".
+* Copy the new bloader.com file to the floppy disk.
+* Copy any of the apps that you want to be able to run on to the floppy.
+
