@@ -24,10 +24,10 @@ Please send comments or bug reports to
 #define HIGH_BYTE(n) ((n >> 8) & 0x00FF)
 #define TimerIRQ 0x08
 
-void initialize_timerISR();
-void initialize_timer_frequency();
-void reset_timer_interrupt();
-unsigned int get_random();
+void initialize_timerISR( );
+void initialize_timer_frequency( );
+void reset_timer_interrupt( );
+unsigned int get_random( );
 
 #endif
 

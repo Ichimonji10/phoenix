@@ -34,84 +34,84 @@ processID vidid;
 processID testid;
 processID hackid;
 
-void *test(void);
-void *hack(void);
+void *test( void );
+void *hack( void );
 
-int main(void)
+int main( void )
 {
-    vidid.pid = VIDEO;
+    vidid.pid  = VIDEO;
     testid.pid = MAIN;
     hackid.pid = 3;
 	
-    clear_screen();
+    clear_screen( );
   
-    disable_interrupts();
+    disable_interrupts( );
   
-    initialize_timer_frequency();
-    initialize_timerISR();
-    print_at(trace_counter++, TRACE_COLUMN, "Timer initialized", COLOR);
+    initialize_timer_frequency( );
+    initialize_timerISR( );
+    print_at( trace_counter++, TRACE_COLUMN, "Timer initialized", COLOR );
   
     message_init();
-    print_at(trace_counter++, TRACE_COLUMN, "Messages initialized", COLOR);
+    print_at( trace_counter++, TRACE_COLUMN, "Messages initialized", COLOR );
  
-    if (xthread_create(vidid, run_video)) {
-        print_at(trace_counter++, TRACE_COLUMN, "Failed to create video thread", COLOR);
+    if( xthread_create( vidid, run_video ) ) {
+        print_at( trace_counter++, TRACE_COLUMN, "Failed to create video thread", COLOR );
     }
     else {
-        print_at(trace_counter++, TRACE_COLUMN, "Created video thread", COLOR);
+        print_at( trace_counter++, TRACE_COLUMN, "Created video thread", COLOR );
     }
   
-    if (xthread_create(testid, test)) {
-        print_at(trace_counter++, TRACE_COLUMN, "Failed to create test thread", COLOR);
+    if( xthread_create( testid, test ) ) {
+        print_at( trace_counter++, TRACE_COLUMN, "Failed to create test thread", COLOR );
     }
     else {
-        print_at(trace_counter++, TRACE_COLUMN, "Created test thread", COLOR);
+        print_at( trace_counter++, TRACE_COLUMN, "Created test thread", COLOR );
     }
   
   
-    if (xthread_create(hackid, hack)) {
-        print_at(trace_counter++, TRACE_COLUMN, "Failed to create hack thread", COLOR);
+    if( xthread_create( hackid, hack ) ) {
+        print_at( trace_counter++, TRACE_COLUMN, "Failed to create hack thread", COLOR );
     }
     else {
-        print_at(trace_counter++, TRACE_COLUMN, "Created hack thread", COLOR);
+        print_at( trace_counter++, TRACE_COLUMN, "Created hack thread", COLOR );
     } 
  
-    enable_interrupts();
+    enable_interrupts( );
   
-    print_at(trace_counter++, TRACE_COLUMN, "Looping in main", COLOR);
-    for (;;) { }
-    print_at(trace_counter++, TRACE_COLUMN, "SHOULD NEVER SEE THIS!", COLOR);
+    print_at( trace_counter++, TRACE_COLUMN, "Looping in main", COLOR );
+    for ( ;; ) { }
+    print_at( trace_counter++, TRACE_COLUMN, "SHOULD NEVER SEE THIS!", COLOR );
     return 0;
 }
 
 
-void *test(void)
+void *test( void )
 {
     int row = 0;
     int i, j;
     byte color = 0x01;
   
-    while (1) {
-        if  (row < 0) {
+    while( 1 ) {
+        if( row < 0 ) {
             row = 0;
         }
   
-        xvideo_print_at(row, 1, "Phoenix Lives!!", color);
+        xvideo_print_at( row, 1, "Phoenix Lives!!", color );
         row++;
         color++;
     
         //Delay
-        for (i = 0; i < 1000; i++) {
-            for (j = 0; j < 2000; j++) { }
+        for( i = 0; i < 1000; i++ ) {
+            for( j = 0; j < 2000; j++ ) { }
         }
     }
     return NULL;
 }
 
 
-void *hack(void)
+void *hack( void )
 {
-    while (1) { }
+    while( 1 ) { }
     return NULL;
 }
 

@@ -30,10 +30,10 @@ typedef struct {
     int             raw_count;
 } semaphore;
 
-void semaphore_init(semaphore *, int);
-void semaphore_destroy(semaphore *);
-void semaphore_up(semaphore *, processID);
-void semaphore_down(semaphore *, processID);
+void semaphore_init( semaphore *, int );
+void semaphore_destroy( semaphore * );
+void semaphore_up( semaphore *, processID );
+void semaphore_down( semaphore *, processID );
 
 // This is our producer/consumer buffer type.
 typedef struct {
@@ -43,10 +43,10 @@ typedef struct {
     semaphore       free;      // ...
 } xbuffer;
 
-void  xbuffer_init(xbuffer *);
-void  xbuffer_destroy(xbuffer *, processID);
-void  xbuffer_push(xbuffer *, message *, processID);
-message *xbuffer_pop(xbuffer *, processID *, processID *);
+void  xbuffer_init( xbuffer * );
+void  xbuffer_destroy( xbuffer *, processID );
+void  xbuffer_push( xbuffer *, message *, processID );
+message *xbuffer_pop( xbuffer *, processID *, processID * );
 
 #endif
 

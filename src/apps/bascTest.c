@@ -19,33 +19,33 @@ Please send comments or bug reports to
 #include "vga.h"
 #include "video.h"
 
-void video_test()
+void video_test( )
 {
     int vertices[12]={30,20, 35,30, 62,18, 300,55, 100,60, 40,150};
   
-    set_mode(VGA_MODE);
-    put_pixel(100, 101, 4);
-    line(40, 40, 100, 60, 6);
-    rect(140, 50, 230, 80, 4);
-    rect_fill(30, 160, 50, 178, 2);
-    circle(100, 100, 30, 4);
-    polygon(6,vertices,15);
-    fill(80, 80, 35);
-    vga_print_at(10, 10, "Hello World", 32);
-    put_trans_image(20, 20, 0, "rocket");
+    set_mode( VGA_MODE );
+    put_pixel( 100, 101, 4 );
+    line( 40, 40, 100, 60, 6 );
+    rect( 140, 50, 230, 80, 4 );
+    rect_fill( 30, 160, 50, 178, 2 );
+    circle( 100, 100, 30, 4 );
+    polygon( 6, vertices, 15 );
+    fill( 80, 80, 35 );
+    vga_print_at( 10, 10, "Hello World", 32 );
+    put_trans_image( 20, 20, 0, "rocket" );
 }
 
 
-int main(void)
+int main( void )
 {
     //process video;  
   
     //video.pid = 0x01;
-    //xthread_create(video, do_stuff);
+    //xthread_create( video, do_stuff );
   
-    video_test();
+    video_test( );
   
-    while(1) { }
+    while( 1 ) { }
     return 0;
 }
 

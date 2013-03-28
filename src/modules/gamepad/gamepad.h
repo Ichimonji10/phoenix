@@ -19,16 +19,16 @@ Please send comments or bug reports to
 #ifndef GAMEPAD_H
 #define GAMEPAD_H
 
-void initialize_gamepad();
+void initialize_gamepad( );
 
-byte get_data_register();
-byte get_status_register();
-byte get_control_register();
-byte get_register4();
-byte get_register5();
-byte get_register6();
-byte get_register7();
-byte get_register8();
+byte get_data_register( );
+byte get_status_register( );
+byte get_control_register( );
+byte get_register4( );
+byte get_register5( );
+byte get_register6( );
+byte get_register7( );
+byte get_register8( );
 
 #endif
 

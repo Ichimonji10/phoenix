@@ -31,7 +31,7 @@ Please send comments or bug reports to
 #define A3  5423
 #define A3S 5119
 #define B3  4831
-#define C4  4560 //Middle C
+#define C4  4560 // Middle C.
 #define C4S 4304
 #define D4  4063
 #define D4S 3834
@@ -55,10 +55,10 @@ Please send comments or bug reports to
 #define A5  1355
 #define A5S 1292
 #define B5  1207
-#define C6  1140 //High C
+#define C6  1140 // High C.
 
-//Produces a beep
-void beep(word frequency);
+// Produces a beep.
+void beep( word frequency );
 
 #endif
 

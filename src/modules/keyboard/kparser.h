@@ -18,6 +18,6 @@ Please send comments or bug reports to
 #ifndef KPARSER_H
 #define KPARSER_H
 
-void *run_keyboard(void);
+void *run_keyboard( void );
 
 #endif

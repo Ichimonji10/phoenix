@@ -24,29 +24,29 @@ Please send comments or bug reports to
 #include "debug.h"
 
 /*! \file xtimer.c Timer handling functions.
-
-    When you figure out what these functions do, document them here.
+ *
+ * When you figure out what these functions do, document them here.
  */
 
-extern void create_process_asm(void (*start_routine)(void), word *stack);
-extern void store_process_asm(word *stack);
-extern void next_process_asm(word *stack);
-extern void switch_process_asm(word *stack);
-extern void __interrupt Timer_ISR_asm(void);
+extern void create_process_asm( void (*start_routine)( void ), word *stack );
+extern void store_process_asm( word *stack );
+extern void next_process_asm( word *stack );
+extern void switch_process_asm( word *stack );
+extern void __interrupt Timer_ISR_asm( void );
 
-void *idle_thread(void);
+void *idle_thread( void );
 
-static void (__interrupt * __far * __far IVT)(void);
+static void (__interrupt * __far * __far IVT)( void );
 
 static unsigned int count = 10;
 static int col = 8;
 unsigned int sch_count = 0;
-//static unsigned long deadbeef_seed = 0;
-//static unsigned long deadbeef_beef = 0xdeadbeef;
+// static unsigned long deadbeef_seed = 0;
+// static unsigned long deadbeef_beef = 0xdeadbeef;
 static bool first_time = true;
 
-//timer interrupt function
-word far* Timer_ISR(word far* p)
+// Timer interrupt function.
+word far* Timer_ISR( word far* p )
 {
     processID idle;
     process *current_process;
@@ -54,103 +54,103 @@ word far* Timer_ISR(word far* p)
 
     idle.pid = IDLE;
 
-    if (first_time) {
-        current_process = getNext();
-        setCurrent();
+    if( first_time ) {
+        current_process = getNext( );
+        setCurrent( );
         first_time = false;
         return current_process->stack;
     }
 
-    current_process = getCurrent();
+    current_process = getCurrent( );
 
-    if (current_process == NULL) {
-        print_at(count++, col, "thread pointing to NULL", 0x04);
+    if( current_process == NULL ) {
+        print_at( count++, col, "thread pointing to NULL", 0x04 );
         return p;
     }
 
     current_process->stack = p;
 
-    next_process = getNext();
+    next_process = getNext( );
 
     //search for next runnable thread
-    while (next_process->runnable == false || next_process->pid.pid == IDLE) {
-        debug_print(sch_count++, 46, "SCH", 0x03);
-        //run idle thread if it loop around the xroundbuffer and no runnable thread
-        if (next_process->pid.pid == current_process->pid.pid) {
-            next_process = getProcess(idle);
+    while( next_process->runnable == false || next_process->pid.pid == IDLE ) {
+        debug_print( sch_count++, 46, "SCH", 0x03 );
+        // Run idle thread if it loop around the xroundbuffer and no runnable thread.
+        if( next_process->pid.pid == current_process->pid.pid ) {
+            next_process = getProcess( idle );
 
-            setIdle();
-            debug_print(sch_count++, 46, "IDL", 0x03);
+            setIdle( );
+            debug_print( sch_count++, 46, "IDL", 0x03 );
             return next_process->stack;
         }
-        next_process = getNext();
+        next_process = getNext( );
     }
 
-    if (next_process->pid.pid == current_process->pid.pid) {
-        setCurrent();
+    if( next_process->pid.pid == current_process->pid.pid ) {
+        setCurrent( );
         return p; //return to asm
     }
 
-    setCurrent();
+    setCurrent( );
     return next_process->stack;
 }
 
 
-void *idle_thread(void)
+void *idle_thread( void )
 {
-    enable_interrupts();
-    while(1) { }
+    enable_interrupts( );
+    while( 1 ) { }
     return NULL;
 }
 
 
 //create idel thread
-void create_idle_thread()
+void create_idle_thread( void )
 {
     processID idleid;
     idleid.pid = IDLE;
-    xthread_create(idleid, idle_thread);
+    xthread_create( idleid, idle_thread );
     return;
 }
 
 
 //initialize the timer interrupt
-void initialize_timerISR()
+void initialize_timerISR( void )
 {
-    IVT = MK_FP(0,0);
+    IVT = MK_FP( 0, 0 );
     IVT[TimerIRQ] = Timer_ISR_asm;
-    create_idle_thread();
+    create_idle_thread( );
 }
 
 
 //initialize_timer_frequency to ~2.8ms
-void initialize_timer_frequency()
+void initialize_timer_frequency( void )
 {
-    outp(0x42, 0x3c);
-    outp(0x40, 0x00);
-    outp(0x40, 0x10);
+    outp( 0x42, 0x3c );
+    outp( 0x40, 0x00 );
+    outp( 0x40, 0x10 );
 }
 
 
 //reset the interrupt vector back to normal
-/*void reset_timer_interrupt()
+/*void reset_timer_interrupt( void )
 {
-  _dos_setvect(TimerIRQ, Old_TimerISR);
-  outp(0x43, 0x3c);
-  outp(0x40, LOW_BYTE(0xFFFF));
-  outp(0x40, HIGH_BYTE(0xFFFF));
+  _dos_setvect( TimerIRQ, Old_TimerISR );
+  outp( 0x43, 0x3c );
+  outp( 0x40, LOW_BYTE(0xFFFF) );
+  outp( 0x40, HIGH_BYTE(0xFFFF) );
 }
 */
 
 // based on Robert Haarman's deadbeef prng
 // http://inglorion.net/software/deadbeef_rand/
-unsigned int get_random()
+unsigned int get_random( void )
 {
 /*
-    if (deadbeef_seed == 0) {
-        deadbeef_seed = random_seed();
-        deadbeef_seed *= random_seed();
-        deadbeef_seed *= random_seed();
+    if( deadbeef_seed == 0 ) {
+        deadbeef_seed  = random_seed( );
+        deadbeef_seed *= random_seed( );
+        deadbeef_seed *= random_seed( );
     }
 
     deadbeef_seed = (deadbeef_seed << 7) ^ ((deadbeef_seed >> 25) + deadbeef_beef);
@@ -162,8 +162,8 @@ unsigned int get_random()
 }
 
 
-int random_seed()
+int random_seed( )
 {
-    return (int)inp(0x40);
+    return (int)inp( 0x40 );
 }
 

@@ -21,7 +21,7 @@ Please send comments or bug reports to
 #include "debug.h"
 #include "xstring.h"
 
-void *run_keyboard(void)
+void *run_keyboard( void )
 {
     message      received;
     char         rec_buff[5120];
@@ -42,48 +42,48 @@ void *run_keyboard(void)
     response.src = self;
     response.size = 0;
   
-    while (1) {
+    while( 1 ) {
         //try to get a message, waits until one's available 
-        message_receive(&received);
+        message_receive( &received );
 	
-        debug_print(debug_counter++, 33, "KRCV", 0x05);
-        if (received.src.pid != -1) {
+        debug_print( debug_counter++, 33, "KRCV", 0x05 );
+        if( received.src.pid != -1 ) {
     
             // point to the beginning of incoming data 
             current = received.data;
 
             // extract the function name
-            func = get_int(current);
+            func = get_int( current );
 	
             current += 2;
     
             // attempt to run the named function
-            switch (func) {
+            switch( func ) {
             case GETKEY:
-                c = getKey();
+                c = getKey( );
                 response.data = &c;
                 break;
                 
             case GETNEWKEYS:
-                response.data = getNewkeys();
-                response.size = xstrlen(getNewkeys());	    
+                response.data = getNewkeys( );
+                response.size = xstrlen( getNewkeys( ) );
                 break;
                 
             case GETKEYSTRING:
-                response.data = getNewkeys();
+                response.data = getNewkeys( );
                 break;
                 
             default:
-                debug_print(debug_counter++, 24, "DFT", 0x05);
-                debug_print(debug_counter++, 1, current-2, 0x04);
+                debug_print( debug_counter++, 24, "DFT", 0x05 );
+                debug_print( debug_counter++, 1, current-2, 0x04 );
                 break;
             }
     
             response.size = 2;
     
             response.dest = received.src;
-            debug_print(debug_counter++, 24, "RPY", 0x05);
-            message_reply(&response);
+            debug_print( debug_counter++, 24, "RPY", 0x05 );
+            message_reply( &response );
         }
     }
     return NULL;

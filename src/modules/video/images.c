@@ -21,10 +21,10 @@ Please send comments or bug reports to
 #include "xstddef.h"
 
 /*! \file images.c Holds images for bmp display.
-
-    This is where the game designer can add bitmaps to their game. Use the bmp2hex tool in the
-    tools folder to get the hex array to add to this file. Use the put_image function to display
-    the image.
+ *
+ * This is where the game designer can add bitmaps to their game. Use the bmp2hex tool in the
+ * tools folder to get the hex array to add to this file. Use the put_image function to display
+ * the image.
  */
 
 /*
@@ -499,17 +499,18 @@ char run_palette[]={
 };
 
 //! Takes an image name and returns the image.
-/*! This will need to be modified for support of each new image that is added.
-
-    \param name A caracters string that represents the image.
-    \return The image scructure.
+/*!
+ * This will need to be modified for support of each new image that is added.
+ *
+ * \param name A caracters string that represents the image.
+ * \return The image scructure.
  */
-struct image get_image(const char *name)
+struct image get_image( const char *name )
 {
     struct image my_image;
 
 /*
-    if (xstrcmp("rocket", name) == 0) {
+    if( xstrcmp( "rocket", name ) == 0 ) {
         my_image.width = 64;
         my_image.height = 64;
         my_image.data = rocket_data;
@@ -517,55 +518,55 @@ struct image get_image(const char *name)
     }
     else */
     
-    if (xstrcmp("phoenix", name) == 0) {
+    if( xstrcmp( "phoenix", name ) == 0 ) {
         my_image.width = 80;
         my_image.height = 80;
         my_image.data = phoenix_data; 
         my_image.palette = phoenix_palette;
     }
-    else if (xstrcmp("run1", name) == 0) {
+    else if( xstrcmp( "run1", name ) == 0 ) {
         my_image.width = 32;
         my_image.height = 32;
         my_image.data = run1_data; 
         my_image.palette = run_palette;
     }
-    else if (xstrcmp("run2", name) == 0) {
+    else if( xstrcmp( "run2", name ) == 0 ) {
         my_image.width = 32;
         my_image.height = 32;
         my_image.data = run2_data; 
         my_image.palette = run_palette;
     }
-    else if (xstrcmp("run3", name) == 0) {
+    else if( xstrcmp( "run3", name ) == 0 ) {
         my_image.width = 32;
         my_image.height = 32;
         my_image.data = run3_data; 
         my_image.palette = run_palette;
     }
-    else if (xstrcmp("run4", name) == 0) {
+    else if( xstrcmp( "run4", name ) == 0 ) {
         my_image.width = 32;
         my_image.height = 32;
         my_image.data = run4_data; 
         my_image.palette = run_palette;
     }
-    else if (xstrcmp("run5", name) == 0) {
+    else if( xstrcmp( "run5", name ) == 0 ) {
         my_image.width = 32;
         my_image.height = 32;
         my_image.data = run5_data; 
         my_image.palette = run_palette;
     }
-    else if (xstrcmp("run6", name) == 0) {
+    else if( xstrcmp( "run6", name ) == 0 ) {
         my_image.width = 32;
         my_image.height = 32;
         my_image.data = run6_data; 
         my_image.palette = run_palette;
     }
-    else if (xstrcmp("run7", name) == 0) {
+    else if( xstrcmp( "run7", name ) == 0 ) {
         my_image.width = 32;
         my_image.height = 32;
         my_image.data = run7_data; 
         my_image.palette = run_palette;
     }
-    else if (xstrcmp("run8", name) == 0) {
+    else if( xstrcmp( "run8", name ) == 0 ) {
         my_image.width = 32;
         my_image.height = 32;
         my_image.data = run8_data; 

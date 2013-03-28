@@ -43,28 +43,28 @@ typedef struct {
     bool locked;  // false if available, true if locked
     bool waiting[MAX_THREADS];
     int  waiting_index;
-}xthread_mutex_t;
+} xthread_mutex_t;
 
 typedef struct {
     bool waiting[MAX_THREADS];
     int  waiting_index;
-}xthread_cond_t;
+} xthread_cond_t;
 
 #pragma pack(pop);
 // End of structures with specific alignment requirements.
 
-int xthread_create(processID id, void (*start_routine));
-int xthread_suspend(processID id);
-int xthread_resume(processID id);
-int xthread_mutex_init(xthread_mutex_t *);
-int xthread_mutex_lock(xthread_mutex_t *, processID);
-int xthread_mutex_unlock(xthread_mutex_t *);
-int xthread_cond_init(xthread_cond_t *);
-int xthread_cond_wait(xthread_cond_t *, xthread_mutex_t *, processID);
-int xthread_cond_signal(xthread_cond_t *);
-void xthread_switch_thread();
-void disable_interrupts();
-void enable_interrupts();
+int xthread_create( processID id, void (*start_routine)( void ) );
+int xthread_suspend( processID id );
+int xthread_resume( processID id );
+int xthread_mutex_init( xthread_mutex_t * );
+int xthread_mutex_lock( xthread_mutex_t *, processID );
+int xthread_mutex_unlock( xthread_mutex_t * );
+int xthread_cond_init( xthread_cond_t * );
+int xthread_cond_wait( xthread_cond_t *, xthread_mutex_t *, processID );
+int xthread_cond_signal( xthread_cond_t * );
+void xthread_switch_thread( );
+void disable_interrupts( );
+void enable_interrupts( );
 
 #endif
 

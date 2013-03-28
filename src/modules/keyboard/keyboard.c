@@ -26,7 +26,7 @@ static bool has_read = false;
 int count = 0;
 static char key = 0;
 
-void (__interrupt * __far * __far IVTK)(void);
+void ( __interrupt * __far * __far IVTK )( void );
 
 const char key_map[256] = {
     0x0, 0x27, '1', '2', '3', '4', '5', '6',  '7', '8', '9',  '0',  '-', '=', 0x08, 0x09,
@@ -38,21 +38,21 @@ const char key_map[256] = {
     0x0,  0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,  0x0, 0x0, 0x0,  0x0,  0x0, 0x0,  0x0,  0x0,
     0x0,  0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,  0x0, 0x0, 0x0,  0x0,  0x0, 0x0,  0x0,  0x0, 0x0};
 
-void(__interrupt __far *Old_keyboardISR)();
+void ( __interrupt __far *Old_keyboardISR )( );
 
-void initialize_keyboardISR()
+void initialize_keyboardISR( )
 {
     IVTK[KeyboardISR] = keyboard_ISR;
-    outp(0x60, 0x75);
+    outp( 0x60, 0x75 );
 }
 
 
-void ReadScanCode()
+void ReadScanCode( )
 {
-    switch(KEY_STATE) {
+    switch( KEY_STATE ) {
     case REGULER_KEY:
-            count = 0;
-        if (key == 0x00 && (int)Lastkey > 0x39) {
+        count = 0;
+        if( key == 0x00 && (int)Lastkey > 0x39 ) {
             has_read = false;
         }
         else {
@@ -62,7 +62,7 @@ void ReadScanCode()
         break;
 
     case EXTENDED_KEY:
-        if (count <= 2) {
+        if( count <= 2 ) {
             break;
         }
         else {
@@ -74,11 +74,11 @@ void ReadScanCode()
         break;
 
     case CAP_KEY:
-        while (Lastkey == 0xE0) { };
-        if (Lastkey == 0xAA || Lastkey == 0xB6) {
+        while( Lastkey == 0xE0 ) { };
+        if( Lastkey == 0xAA || Lastkey == 0xB6 ) {
             KEY_STATE = REGULER_KEY;
         }
-        else if (key_map[(int)Lastkey] >= 0x61 && key_map[(int)Lastkey] <= 0x7A) {
+        else if( key_map[(int)Lastkey] >= 0x61 && key_map[(int)Lastkey] <= 0x7A ) {
             key = key_map[(int)Lastkey] - 0x20;
             count = 0;
             has_read = true;
@@ -90,7 +90,7 @@ void ReadScanCode()
         break;
 
     case ARROW_KEY:
-        if (Lastkey > 0x47  && Lastkey < 0x51) {
+        if( Lastkey > 0x47  && Lastkey < 0x51 ) {
             count = 0;
             has_read = true;
             key = Lastkey;
@@ -100,53 +100,53 @@ void ReadScanCode()
 }
 
 
-void check_scan_code()
+void check_scan_code( )
 {
-    if (KEY_STATE == ARROW_KEY) {
-        if (Lastkey == 0xAA) {
+    if( KEY_STATE == ARROW_KEY ) {
+        if( Lastkey == 0xAA ) {
             return;
         }
-        if (Lastkey == 0x2A) {
+        if( Lastkey == 0x2A ) {
             KEY_STATE = REGULER_KEY;
             return;
         }
     }
-    if (Lastkey == 0x2A || Lastkey == 0x36) { //check shift is press
+    if( Lastkey == 0x2A || Lastkey == 0x36 ) { // Check shift is press.
         KEY_STATE = CAP_KEY;
     }
-    if (Lastkey == 0xAA) { //release of shift press
+    if( Lastkey == 0xAA ) { // Release of shift press.
         KEY_STATE = REGULER_KEY;
     }
-    if (Lastkey == 0xE0) { //check of extended key is press
+    if( Lastkey == 0xE0 ) { // Check of extended key is press.
         KEY_STATE = EXTENDED_KEY;
     }
-    if (Lastkey > 0x47  && Lastkey < 0x51) {
+    if( Lastkey > 0x47  && Lastkey < 0x51 ) {
         KEY_STATE = ARROW_KEY;
     }
-    ReadScanCode();
+    ReadScanCode( );
 }
 
 
-void __interrupt __far keyboard_ISR()
+void __interrupt __far keyboard_ISR( )
 {
     _asm {
         CLI
     };
 
-    Lastkey = inp(0x60);
-    check_scan_code();
+    Lastkey = inp( 0x60 );
+    check_scan_code( );
     count++;
-    outp(0x20, 0x20);
+    outp( 0x20, 0x20 );
 }
 
 
-char *getNewkeys()
+char *getNewkeys( )
 {
     return "Not implement yet";
 }
 
 
-char *getKeyString()
+char *getKeyString( )
 {
     char c[2];
 
@@ -156,7 +156,7 @@ char *getKeyString()
 }
 
 
-char getKey()
+char getKey( )
 {
     char temp;
 
@@ -166,19 +166,19 @@ char getKey()
 }
 
 
-int getNewkeys_size()
+int getNewkeys_size( )
 {
-    return xstrlen(getNewkeys());
+    return xstrlen( getNewkeys( ) );
 }
 
 
-bool hasRead()
+bool hasRead( )
 {
     return has_read;
 }
 
 
-void finishRead()
+void finishRead( )
 {
     has_read = false;
 }

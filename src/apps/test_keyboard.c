@@ -20,21 +20,21 @@ Please send comments or bug reports to
 int col_counter = 0;
 int row = 0;
 
-int main()
+int main( void )
 { 
     char c[2];
     c[1] = '\0';
   
-    initialize_keyboardISR();
-    clear_screen();
-    print_at(row++, 0, "initialized keyboard interrupt", 0x04);
+    initialize_keyboardISR( );
+    clear_screen( );
+    print_at( row++, 0, "initialized keyboard interrupt", 0x04 );
   
-    print_at(row++, 0, "Looping in Main", 0x04);
-    while (1) {
-        if (hasRead()) {
-            c[0] = xkeyboard_getKey();
-            print_at(3, col_counter++, c, 0x03);
-            finishRead();
+    print_at( row++, 0, "Looping in Main", 0x04 );
+    while( 1 ) {
+        if( hasRead( ) ) {
+            c[0] = xkeyboard_getKey( );
+            print_at( 3, col_counter++, c, 0x03 );
+            finishRead( );
         }
     }
     return 0;

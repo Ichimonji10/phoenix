@@ -17,24 +17,24 @@ Please send comments or bug reports to
 
 #include "beep.h"
 
-int main(void)
+int main( void )
 { 
-    while(1) {
-        beep(C5);
-        beep(A4S);
-        beep(F4);
-        beep(C5);
-        beep(A4S);
-        beep(F4);
-        beep(C5);
-        beep(A4S);
-        beep(F4);
-        beep(C5);
-        beep(A4S);
-        beep(F4);
-        beep(C5);
-        beep(C5);
-        beep(C5);
+    while( 1 ) {
+        beep(  C5 );
+        beep( A4S );
+        beep(  F4 );
+        beep(  C5 );
+        beep( A4S );
+        beep(  F4 );
+        beep(  C5 );
+        beep( A4S );
+        beep(  F4 );
+        beep(  C5 );
+        beep( A4S );
+        beep(  F4 );
+        beep(  C5 );
+        beep(  C5 );
+        beep(  C5 );
     }
     return 0;
 }

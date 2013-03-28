@@ -21,7 +21,7 @@ Please send comments or bug reports to
 extern int debug_counter;
 
 // Prints a character string to a specific location with color information, when in debug mode
-void debug_print(int row, int column, const char *message, byte color);
+void debug_print( int row, int column, const char *message, byte color );
 
 #endif
 

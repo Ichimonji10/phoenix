@@ -38,86 +38,86 @@ int mutex_state = 0;
 xthread_mutex_t mutex;
 
 // Thread functions.
-void *thread1(void);
-void *thread2(void);
+void *thread1( void );
+void *thread2( void );
 
-int main()
+int main( )
 {  
     id1.pid = 0;
     id2.pid = 1;
 	
-    clear_screen();
-    print_at(trace_counter++, TRACE_COLUMN, "Start of main", COLOR);
+    clear_screen( );
+    print_at( trace_counter++, TRACE_COLUMN, "Start of main", COLOR );
   
     _asm {
         CLI
     };
   
-    initialize_timer_frequency();
-    initialize_timerISR();
-    print_at(trace_counter++, TRACE_COLUMN, "Timer initialized", COLOR);
+    initialize_timer_frequency( );
+    initialize_timerISR( );
+    print_at( trace_counter++, TRACE_COLUMN, "Timer initialized", COLOR );
  
-    xthread_mutex_init(&mutex);
-    print_at(trace_counter++, TRACE_COLUMN, "Mutex initialized", COLOR);
+    xthread_mutex_init( &mutex );
+    print_at( trace_counter++, TRACE_COLUMN, "Mutex initialized", COLOR );
  
-    if (xthread_create(id1, thread1)) {
-        print_at(trace_counter++, TRACE_COLUMN, "Failed to create thread 1", COLOR);
+    if( xthread_create( id1, thread1 ) ) {
+        print_at( trace_counter++, TRACE_COLUMN, "Failed to create thread 1", COLOR );
     }
     else {
-        print_at(trace_counter++, TRACE_COLUMN, "Created thread 1", COLOR);
+        print_at( trace_counter++, TRACE_COLUMN, "Created thread 1", COLOR );
     }
   
-    if (xthread_create(id2, thread2)) {
-        print_at(trace_counter++, TRACE_COLUMN, "Failed to create thread 2", COLOR);
+    if( xthread_create( id2, thread2 ) ) {
+        print_at( trace_counter++, TRACE_COLUMN, "Failed to create thread 2", COLOR );
     }
     else {
-        print_at(trace_counter++, TRACE_COLUMN, "Created thread 2", COLOR);
+        print_at( trace_counter++, TRACE_COLUMN, "Created thread 2", COLOR );
     }
  
     _asm {
         STI
     };
   
-    print_at(trace_counter++, TRACE_COLUMN, "Looping in main", COLOR);
-    for (;;) { }
-    print_at(trace_counter++, TRACE_COLUMN, "SHOULD NEVER SEE THIS!", COLOR);
+    print_at( trace_counter++, TRACE_COLUMN, "Looping in main", COLOR );
+    for ( ;; ) { }
+    print_at( trace_counter++, TRACE_COLUMN, "SHOULD NEVER SEE THIS!", COLOR );
     return 0;
 }
 
 
 // Thread 1
-void *thread1(void)
+void *thread1( void )
 {
-    while(1) {
-        xthread_mutex_lock(&mutex, id1);
-        if(mutex_state != 0) {
-            print_at(0, TRACE_COLUMN, "BAD THINGS!!!", COLOR);
+    while( 1 ) {
+        xthread_mutex_lock( &mutex, id1 );
+        if( mutex_state != 0 ) {
+            print_at( 0, TRACE_COLUMN, "BAD THINGS!!!", COLOR );
         }
 	
         mutex_state = 1;
-        print_at(trace_counter++, 0, "Thread1 got lock", COLOR);
+        print_at( trace_counter++, 0, "Thread1 got lock", COLOR );
         mutex_state = 0;
 	
-        xthread_mutex_unlock(&mutex);
+        xthread_mutex_unlock( &mutex );
     }
     return NULL;
 }
 
 
 // Thread 2
-void *thread2(void)
+void *thread2( void )
 {
-    while (1) {
-        xthread_mutex_lock(&mutex, id2);
-        if (mutex_state != 0) {
-            print_at(0, TRACE_COLUMN, "BAD THINGS!!!", COLOR);
+    while( 1 ) {
+        xthread_mutex_lock( &mutex, id2 );
+        if( mutex_state != 0 ) {
+            print_at( 0, TRACE_COLUMN, "BAD THINGS!!!", COLOR );
         }
 	
         mutex_state = 2;
-        print_at(trace_counter++, 18, "Thread2 got lock", COLOR);
+        print_at( trace_counter++, 18, "Thread2 got lock", COLOR );
         mutex_state = 0;
 	
-        xthread_mutex_unlock(&mutex);
+        xthread_mutex_unlock( &mutex );
     }
     return NULL;
 }

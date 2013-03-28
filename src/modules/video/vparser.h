@@ -18,6 +18,6 @@ Please send comments or bug reports to
 #ifndef VPARSER_H
 #define VPARSER_H
 
-void *run_video(void);
+void *run_video( void );
 
 #endif

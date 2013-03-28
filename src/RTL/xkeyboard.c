@@ -19,7 +19,7 @@ Please send comments or bug reports to
 #include "xstring.h"
 #include "message.h"
 
-char xkeyboard_getKey()
+char xkeyboard_getKey( )
 {
     message request;
     message result;
@@ -31,7 +31,7 @@ char xkeyboard_getKey()
    
     function = GETKEY;
    
-    temp = add_int_to_message(function, temp);
+    temp = add_int_to_message( function, temp );
     size += 2;
  
     request.src.pid = MAIN;
@@ -43,7 +43,7 @@ char xkeyboard_getKey()
     result.src.pid = KEYBOARD;
     result.dest.pid = MAIN;
    
-    message_send(&request, &result);//throw(&testVideo);
+    message_send( &request, &result ); // throw( &testVideo );
    
     return *result.data;
 }

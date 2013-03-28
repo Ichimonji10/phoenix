@@ -18,6 +18,6 @@ Please send comments or bug reports to
 #ifndef XKEYBOARD_H
 #define XKEYBOARD_H
 
-byte xkeyboard_getKey();
+byte xkeyboard_getKey( );
 
 #endif

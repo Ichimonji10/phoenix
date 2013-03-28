@@ -24,14 +24,13 @@ Please send comments or bug reports to
 
 extern int count;
 
-void __interrupt __far keyboard_ISR();
-void initialize_keyboardISR();
-char *getKeyString();
-char getKey();
-char *getNewkeys();
-int getNewkeys_size();
-bool hasRead();
-void finishRead();
+void __interrupt __far keyboard_ISR( );
+void  initialize_keyboardISR( );
+char *getKeyString( );
+char  getKey( );
+char *getNewkeys( );
+int   getNewkeys_size( );
+bool  hasRead( );
+void  finishRead( );
 
 #endif
-

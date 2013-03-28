@@ -20,10 +20,10 @@ Please send comments or bug reports to
 
 unsigned int debug_counter = 0;
 
-void debug_print(int row, int column, const char *message, byte color)
+void debug_print( int row, int column, const char *message, byte color )
 {
     #ifdef DEBUG
-        print_at(row, column, message, color);
+        print_at( row, column, message, color );
     #endif
 }
 

@@ -28,7 +28,7 @@ struct image {
 };
 
 // Takes an image name and returns the image.
-struct image get_image(const char *name);
+struct image get_image( const char *name );
 
 #endif
 

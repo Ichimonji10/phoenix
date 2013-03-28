@@ -20,10 +20,10 @@ Please send comments or bug reports to
 #include "types.h"
 
 /*! \file xrndbuff.c Circular buffer holding process information.
-
-    This file contains the functions used for manipulating a circular buffer of process
-    information structures. Whenever a new process needs to be scheduled for execution, the
-    "next" runnable entry in the round buffer is used.
+ *
+ * This file contains the functions used for manipulating a circular buffer of process
+ * information structures. Whenever a new process needs to be scheduled for execution, the
+ * "next" runnable entry in the round buffer is used.
  */
 
 process xroundbuff[MAX_THREADS];  //!< The actual circular buffer.
@@ -35,23 +35,23 @@ int next    = -1;  //!< Index in the buffer of next process to run.
 
 //! Add a process to the round buffer.
 /*!
-    This function inserts an already initialized process structure into the round buffer (so
-    that the process can potentially be scheduled for running). The first time this function is
-    called, some additional initialization activities are done. Note that this function is not
-    thread-safe. Do not call it from more than one thread at a time!
-    
-    \param newProc A pointer to the initialized process structure to add.
-    
-    \return Zero if there is no error; non-zero otherwise. If the process ID of the new process
-    is already in use by an existing process, this function returns an error indication.
+ * This function inserts an already initialized process structure into the round buffer (so that
+ * the process can potentially be scheduled for running). The first time this function is
+ * called, some additional initialization activities are done. Note that this function is not
+ * thread-safe. Do not call it from more than one thread at a time!
+ *  
+ * \param newProc A pointer to the initialized process structure to add.
+ *  
+ * \return Zero if there is no error; non-zero otherwise. If the process ID of the new process
+ * is already in use by an existing process, this function returns an error indication.
  */
-int addProcess(process *newProc)
+int addProcess( process *newProc )
 {
     int i = 0;
 
     // Initialize all pids to unused first time this is called.
-    if (size == 0) {
-        for (i = 0; i < MAX_THREADS; i++) {
+    if( size == 0 ) {
+        for( i = 0; i < MAX_THREADS; i++ ) {
             xroundbuff[i].pid.pid = -1;
             used[i] = false;
         }
@@ -62,7 +62,7 @@ int addProcess(process *newProc)
     }
 
     // Make sure the processID is not in use.
-    if (used[newProc->pid.pid] == false) {
+    if( used[newProc->pid.pid] == false ) {
         xroundbuff[newProc->pid.pid] = *newProc;
         used[newProc->pid.pid] = true;
         size++;
@@ -75,13 +75,13 @@ int addProcess(process *newProc)
 
 
 //! Sets the current process to the last process found by getNext()
-void setCurrent()
+void setCurrent( )
 {
     current = next;
 }
 
 
-void setIdle()
+void setIdle( )
 {
     current = 0;
 }
@@ -89,13 +89,13 @@ void setIdle()
 
 //! Returns the currently "selected" process.
 /*!
-    \return A pointer to the process structure for the current process. If there is no current
-    process selected (for example if addProcess() has never been called), this function returns
-    NULL.
+ * \return A pointer to the process structure for the current process. If there is no current
+ * process selected (for example if addProcess() has never been called), this function returns
+ * NULL.
  */
-process* getCurrent()
+process* getCurrent( )
 {
-    if (current != -1) {
+    if( current != -1 ) {
         return &xroundbuff[current];
     }
   
@@ -105,14 +105,14 @@ process* getCurrent()
 
 //! Returns the process with the given ID.
 /*!
-    \param id The process ID of the process to select.
-    
-    \return A pointer to the process structure for the process with the given ID. If there is no
-    process defined for that ID, this function returns NULL.
+ * \param id The process ID of the process to select.
+ *  
+ * \return A pointer to the process structure for the process with the given ID. If there is no
+ * process defined for that ID, this function returns NULL.
  */
-process* getProcess(processID id)
+process* getProcess( processID id )
 { 
-    if (used[id.pid] == true) {
+    if( used[id.pid] == true ) {
         return &xroundbuff[id.pid];
     }
  
@@ -122,22 +122,22 @@ process* getProcess(processID id)
 
 //! Return a pointer to the next defined process.
 /*!
-    This function returns a pointer to the next process that is defined in the round buffer. As
-    a side effect it also records this process for use by setCurrent().
-    
-    \return A pointer to the next defined process. If no processes are defined (for example if
-    addProcess() has not yet been called), this function returns NULL.
+ * This function returns a pointer to the next process that is defined in the round buffer. As a
+ * side effect it also records this process for use by setCurrent().
+ *  
+ * \return A pointer to the next defined process. If no processes are defined (for example if
+ * addProcess() has not yet been called), this function returns NULL.
  */
-process* getNext()
+process* getNext( )
 {
-    if (next != -1) {
+    if( next != -1 ) {
         next++;
     
         // find the next existing process
-        while (used[next] == false) {
+        while( used[next] == false ) {
             next++;
     
-            if (next == MAX_THREADS) {
+            if( next == MAX_THREADS ) {
                 next = 0;
             }
         }
@@ -146,5 +146,3 @@ process* getNext()
   
     return NULL;
 }
-
-

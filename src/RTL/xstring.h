@@ -17,9 +17,9 @@ Please send comments or bug reports to
 #ifndef XSTRING_H
 #define XSTRING_H
 
-int xstrlen(const char *string);
-int xstrcmp(const char *string1, const char *string2);
-char *xstrcpy(char *destination, const char *source);
+int   xstrlen( const char *string );
+int   xstrcmp( const char *string1, const char *string2 );
+char *xstrcpy( char *destination, const char *source );
 
 #endif
 

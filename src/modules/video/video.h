@@ -24,14 +24,14 @@ Please send comments or bug reports to
 #define GET_MODE            0x0F      /* BIOD func to get the video mode/ */
 
 // Prints a character string to a specific location with color information (used in mode 0x03);
-void print_at(int row, int column, const char *message, byte color);
+void print_at( int row, int column, const char *message, byte color );
 
 // Sets the video mode
 // 13h
-void set_mode(byte mode);
+void set_mode( byte mode );
 
 // Crears the screen
-void clear_screen();
+void clear_screen( );
 
 #endif
 

@@ -17,10 +17,10 @@ Please send comments or bug reports to
 #define TYPES_H
 
 /*! \file types.h Useful type definitions.
-
-    This file contains various type definitions that are useful across the Phoenix project.
-    Rather than defining these types in multiple places and running the risk of the definitions
-    becoming inconsistent, modules should include this header instead.
+ *
+ * This file contains various type definitions that are useful across the Phoenix project.
+ * Rather than defining these types in multiple places and running the risk of the definitions
+ * becoming inconsistent, modules should include this header instead.
  */
 
 typedef unsigned char  byte;  //!< Use for raw 8 bit values.
