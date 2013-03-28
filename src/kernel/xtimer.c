@@ -28,7 +28,7 @@ Please send comments or bug reports to
  * When you figure out what these functions do, document them here.
  */
 
-extern void create_process_asm( void (*start_routine)( void ), word *stack );
+extern void create_process_asm( void *(*start_routine)( void ), word *stack );
 extern void store_process_asm( word *stack );
 extern void next_process_asm( word *stack );
 extern void switch_process_asm( word *stack );

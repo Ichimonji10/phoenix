@@ -53,7 +53,7 @@ typedef struct {
 #pragma pack(pop);
 // End of structures with specific alignment requirements.
 
-int xthread_create( processID id, void (*start_routine)( void ) );
+int xthread_create( processID id, void *(*start_routine)( void ) );
 int xthread_suspend( processID id );
 int xthread_resume( processID id );
 int xthread_mutex_init( xthread_mutex_t * );

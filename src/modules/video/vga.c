@@ -97,7 +97,7 @@ byte get_pixel( int x, int y )
  * \param y2 The y position of the second point (0 to 199).
  * \param color The color of the line.
  */
-void line( int x1, int y1, int x2, int y2, byte color a )
+void line( int x1, int y1, int x2, int y2, byte color )
 {
     int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, px, py;
 

@@ -31,11 +31,11 @@ word stacks[MAX_THREADS][STACK_SIZE];
 unsigned int lock_counter = 0;
 bool run_idle = false;
 
-extern void create_process_asm( void (*start_routine)( void ), word *stack );
+extern void create_process_asm( void *(*start_routine)( void ), word *stack );
 extern void next_process_asm( word *stack );
 
 // Disable thread and store the current context into stack
-int xthread_create( processID id, void (*start_routine)( void ) )
+int xthread_create( processID id, void *(*start_routine)( void ) )
 {
     int     rc = 0;
     process new_process;
