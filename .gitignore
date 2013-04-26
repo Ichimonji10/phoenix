@@ -1,3 +1,9 @@
+# Build artifacts.
 *.obj
 *.exe
 *.lib
+
+# Disk image files.
+*.iso
+*.log
+*.img
