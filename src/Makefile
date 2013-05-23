@@ -20,8 +20,6 @@ all:    .SYMBOLIC
     wmake -h
     cd ../../apps
     wmake -h
-    cd ../tools
-    wmake -h
     cd ..
 
 debug:    .SYMBOLIC
@@ -38,8 +36,6 @@ debug:    .SYMBOLIC
     cd ../gamepad
     wmake -h
     cd ../../apps
-    wmake -h
-    cd ../tools
     wmake -h
     cd ..
 
@@ -58,8 +54,6 @@ clean:  .SYMBOLIC
     cd ../gamepad
     wmake -h clean
     cd ../../apps
-    wmake -h clean
-    cd ../tools
     wmake -h clean
     cd ..
 

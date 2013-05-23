@@ -1,5 +1,6 @@
 # Build artifacts.
 *.obj
+*.o
 *.exe
 *.lib
 
@@ -7,3 +8,15 @@
 *.iso
 *.log
 *.img
+
+# Related to the boot system.
+src/boot/boot.bin
+src/boot/loader.com
+src/boot/loader.err
+src/boot/loader.map
+src/boot/bloader.com
+
+# Related to the tools build.
+src/tools/bmp2hex
+src/tools/copyboot
+src/tools/memalign

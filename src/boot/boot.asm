@@ -11,6 +11,7 @@
 ORG 0
 jmp     START
 
+NOPOpCode             db 0x90   ; The jmp assembles to just two bytes and three are required.
 OEM_ID                db "QUASI-OS"
 BytesPerSector        dw 0x0200
 SectorsPerCluster     db 0x01

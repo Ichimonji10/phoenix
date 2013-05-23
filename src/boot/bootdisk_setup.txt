@@ -1,23 +1,57 @@
 Bootdisk Setup
+==============
+
 This document gives instructions on how to set up a bootdisk for Phoenix.
-04-07-08
 
 Requirements:
-NASM
-Open Watcom
-floppy disk
 
-Instructions:
-* Put a floppy disk in the drive.
-* Navigate to the Phoenix src directory.
-* Type "wmake"
-* Navigate to the Phoenix src\boot directory.
-* Type "nasm boot.asm -o boot.bin".
-* Type "debug boot.bin".
-* Type "W 100 0 0 1".
-* Type "Q" for quit.
-* Type "wmake".
-* Type "..\tools\memalign loader.com".
-* Copy the new bloader.com file to the floppy disk.
-* Copy any of the apps that you want to be able to run on to the floppy.
++ NASM
++ Open Watcom
++ A floppy disk or a floppy disk image.
 
+### Instructions
+
+## Prepare the System
+
+* Go into the src directory.
+* Type 'wmake.' This builds the Phoenix system.
+* Go into the src/tools directory.
+  + Build memalign using 'wcc386 memalign.c'
+  + Build copyboot using 'wcc386 copyboot.c' (only needed if you are using a floppy image)
+* Go into the src/boot directory.
+* Type 'nasm boot.asm -o boot.bin.'
+
+## Prepare the Floppy
+
+* If using a physical floppy, insert it into drive A: (it is essential the disk be in drive #0).
+
+* If using a disk image (on Linux, for example), do the following:
+  + Be sure the mtools package is installed. Set the MTOOLSRC environment variable to point at
+    images/mtoolsrc.
+  + Go into the images directory.
+  + Create the image with the command
+    $ dd if=/dev/zero of=floppy.img count=2880
+  + Format the image with the command (note that a: is bound to the image by mtoolsrc)
+    $ mformat a:
+
+## Copy the Boot Sector
+
+* If using a physical floppy
+  + Type 'debug boot.bin.'
+  + Type 'W 100 0 0 1.'
+    This writes starting at address 100 to drive 0, sector 0, length 1 sector.
+  + Type 'Q' to quit.
+
+* If using a disk image
+  + Type '../src/tools/copyboot ../src/boot/boot.bin floppy.img.'
+    This copies the boot sector from boot.bin onto the first 512 bytes of the floppy image.
+
+## Copy Executables
+
+* Go into the src/boot directory (if you aren't there already).
+* Type 'wmake' to build loader.com.
+* Type '../tools/memalign loader.com.'
+* Copy the new bloader.com file to the floppy disk. (Use mcopy for floppy images)
+  Be sure the name is upper case on the disk (use 'mdir a:' to check).
+* Copy any of the apps that you want to be able to run to the floppy disk. (Use mcopy if needed)
+  Be sure the names are upper case on the disk.
