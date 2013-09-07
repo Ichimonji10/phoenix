@@ -40,12 +40,12 @@ int next    = -1;  //!< Index in the buffer of next process to run.
  * called, some additional initialization activities are done. Note that this function is not
  * thread-safe. Do not call it from more than one thread at a time!
  *  
- * \param newProc A pointer to the initialized process structure to add.
+ * \param new_proc A pointer to the initialized process structure to add.
  *  
  * \return Zero if there is no error; non-zero otherwise. If the process ID of the new process
  * is already in use by an existing process, this function returns an error indication.
  */
-int addProcess( process *newProc )
+int add_process( process *new_proc )
 {
     int i = 0;
 
@@ -57,14 +57,14 @@ int addProcess( process *newProc )
         }
     
         // If the new process is the first process, it is both current and next.
-        current = newProc->pid.pid;
-        next = newProc->pid.pid;
+        current = new_proc->pid.pid;
+        next = new_proc->pid.pid;
     }
 
     // Make sure the processID is not in use.
-    if( used[newProc->pid.pid] == false ) {
-        xroundbuff[newProc->pid.pid] = *newProc;
-        used[newProc->pid.pid] = true;
+    if( used[new_proc->pid.pid] == false ) {
+        xroundbuff[new_proc->pid.pid] = *new_proc;
+        used[new_proc->pid.pid] = true;
         size++;
         return 0;	
     }
@@ -75,13 +75,13 @@ int addProcess( process *newProc )
 
 
 //! Sets the current process to the last process found by getNext()
-void setCurrent( )
+void set_current( )
 {
     current = next;
 }
 
 
-void setIdle( )
+void set_idle( )
 {
     current = 0;
 }
@@ -93,7 +93,7 @@ void setIdle( )
  * process selected (for example if addProcess() has never been called), this function returns
  * NULL.
  */
-process* getCurrent( )
+process* get_current( )
 {
     if( current != -1 ) {
         return &xroundbuff[current];
@@ -110,7 +110,7 @@ process* getCurrent( )
  * \return A pointer to the process structure for the process with the given ID. If there is no
  * process defined for that ID, this function returns NULL.
  */
-process* getProcess( processID id )
+process* get_process( processID id )
 { 
     if( used[id.pid] == true ) {
         return &xroundbuff[id.pid];
@@ -128,7 +128,7 @@ process* getProcess( processID id )
  * \return A pointer to the next defined process. If no processes are defined (for example if
  * addProcess() has not yet been called), this function returns NULL.
  */
-process* getNext( )
+process* get_next( )
 {
     if( next != -1 ) {
         next++;

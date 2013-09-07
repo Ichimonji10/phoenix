@@ -55,13 +55,13 @@ word far* Timer_ISR( word far* p )
     idle.pid = IDLE;
 
     if( first_time ) {
-        current_process = getNext( );
-        setCurrent( );
+        current_process = get_next( );
+        set_current( );
         first_time = false;
         return current_process->stack;
     }
 
-    current_process = getCurrent( );
+    current_process = get_current( );
 
     if( current_process == NULL ) {
         print_at( count++, col, "thread pointing to NULL", 0x04 );
@@ -70,28 +70,28 @@ word far* Timer_ISR( word far* p )
 
     current_process->stack = p;
 
-    next_process = getNext( );
+    next_process = get_next( );
 
-    //search for next runnable thread
+    // Search for next runnable thread
     while( next_process->runnable == false || next_process->pid.pid == IDLE ) {
         debug_print( sch_count++, 46, "SCH", 0x03 );
         // Run idle thread if it loop around the xroundbuffer and no runnable thread.
         if( next_process->pid.pid == current_process->pid.pid ) {
-            next_process = getProcess( idle );
+            next_process = get_process( idle );
 
-            setIdle( );
+            set_idle( );
             debug_print( sch_count++, 46, "IDL", 0x03 );
             return next_process->stack;
         }
-        next_process = getNext( );
+        next_process = get_next( );
     }
 
     if( next_process->pid.pid == current_process->pid.pid ) {
-        setCurrent( );
-        return p; //return to asm
+        set_current( );
+        return p; // Return to the assembly language.
     }
 
-    setCurrent( );
+    set_current( );
     return next_process->stack;
 }
 

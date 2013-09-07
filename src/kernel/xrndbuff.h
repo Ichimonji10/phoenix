@@ -20,12 +20,12 @@ Please send comments or bug reports to
 
 #include "xthread.h"
 
-int  addProcess( process * );
-void setCurrent( );
-void setIdle( );
+int  add_process( process * );
+void set_current( );
+void set_idle( );
 
-process *getCurrent( );
-process *getProcess( processID );
-process *getNext( );
+process *get_current( );
+process *get_process( processID );
+process *get_next( );
 
 #endif

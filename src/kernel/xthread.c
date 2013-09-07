@@ -53,7 +53,7 @@ int xthread_create( processID id, void *(*start_routine)( void ) )
     //
     new_process.stack -= 12;
   
-    if( addProcess(&new_process) != 0 ) rc = 1;
+    if( add_process(&new_process) != 0 ) rc = 1;
     return rc;
 }
 
@@ -65,7 +65,7 @@ int xthread_suspend( processID id )
 {
     process *current_process;
  
-    current_process = getProcess( id );
+    current_process = get_process( id );
     current_process->runnable = false;
     return 0;
 }
@@ -75,7 +75,7 @@ int xthread_resume( processID id )
 {
     process *current_process;
  
-    current_process = getProcess( id );
+    current_process = get_process( id );
     current_process->runnable = true;
     return 0;
 }
