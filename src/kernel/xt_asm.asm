@@ -10,17 +10,17 @@ Please send comments and bug reports to
      Phoenix Team
      c/o Peter C. Chapin
      Vermont Technical College
-     Randolph Center, VT 05061
-     Peter.Chapin@vtc.vsc.edu
+     Williston, VT 05495
+     PChapin@vtc.vsc.edu
 ===========================================================================
 *
         .MODEL SMALL
         .386
         PUBLIC create_process_asm_
         PUBLIC Timer_ISR_asm_
-        EXTRN Timer_ISR_:PROC        
+        EXTRN Schedule_:PROC
         .CODE
-		
+
 Timer_ISR_asm_ PROC near
         push ax
         push cx
@@ -31,23 +31,23 @@ Timer_ISR_asm_ PROC near
         push di
         push ds
         push es
-    
+
         mov ax, DGROUP
         mov ds, ax
         mov es, ax
-		
+
         ;don't turn interrupt on
         mov dx, ss
         mov ax, sp
-        call Timer_ISR_
-		
+        call Schedule_
+
         mov ss, dx
         mov sp, ax
-		
+
         mov dx, 20h
         mov al, 20h
         out dx, al
-		
+
         pop es
         pop ds
         pop di
@@ -70,15 +70,15 @@ Timer_ISR_asm_ ENDP
 create_process_asm_ PROC near
         push    bx        ; Preserve registers as per Open Watcom C compiler requirements.
         push    cx
-        
+
         mov     bx, sp    ; Save stack pointer of caller.
         mov     sp, dx    ; Point sp at new thread stack.
-		
+
         mov     cx, 202h  ; Initial flag register for thread.
         push    cx
         push    cs        ; Thread starting address in cs:ax
         push    ax
-		
+
         mov     cx, 0     ; Initial value for GPRs. The weird below order matches OW.
         push    cx        ; ax
         push    cx        ; cx
@@ -87,11 +87,11 @@ create_process_asm_ PROC near
         push    cx        ; bp
         push    cx        ; si
         push    cx        ; di
-        
+
         mov     cx, ds    ; Thread uses same ds as creator.
         push    cx        ; ds
         push    cx        ; es
-                
+
         mov     sp, bx    ; All done. Restore creator's stack pointer
         pop     cx        ; Restore creator's registers.
         pop     bx

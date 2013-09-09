@@ -16,8 +16,8 @@ Requirements:
 * Go into the src directory.
 * Type 'wmake.' This builds the Phoenix system.
 * Go into the src/tools directory.
-  + Build memalign using 'wcc386 memalign.c'
-  + Build copyboot using 'wcc386 copyboot.c' (only needed if you are using a floppy image)
+  + Build memalign using 'wcl386 memalign.c'
+  + Build copyboot using 'wcl386 copyboot.c' (only needed if you are using a floppy image)
 * Go into the src/boot directory.
 * Type 'nasm boot.asm -o boot.bin.'
 
