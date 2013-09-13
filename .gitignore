@@ -23,3 +23,7 @@ src/boot/bloader.com
 src/tools/bmp2hex
 src/tools/copyboot
 src/tools/memalign
+
+# Vim swapfile
+*.swp
+*.swo
