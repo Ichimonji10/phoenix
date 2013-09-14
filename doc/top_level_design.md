@@ -30,6 +30,8 @@ requirements) will be provided to the programmer.]
 System Architecture
 -------------------
 
+![System Architecture](./system_architecture.svg)
+
 ### Phoenix Kernel
 
 The kernel will handle all messages passing between modules. It will also
