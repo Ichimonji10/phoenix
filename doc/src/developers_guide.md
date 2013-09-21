@@ -50,6 +50,8 @@ pointer. Finally, it replaces the current stack pointer with the incoming thread
 stack pointer, than restores all the CPU registers. Once the CPU register is
 restored, it will start executing the incoming thread.
 
+![Thread Switching Illustration](thread_switching.png)
+
 ### Message Passing
 
 The message passing system is contained in the files `message.h` and `xbuffer.h`
