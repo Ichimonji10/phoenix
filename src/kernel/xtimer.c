@@ -15,12 +15,13 @@ Please send comments or bug reports to
     PChapin@vtc.vsc.edu
 ****************************************************************************/
 
+#include <i86.h>
+
 #include "xtimer.h"
 #include "xthread.h"
 #include "xrndbuff.h"
 #include "video.h"
 #include "xstddef.h"
-#include <i86.h>
 #include "debug.h"
 
 /*! \file xtimer.c Timer handling functions.
@@ -28,10 +29,8 @@ Please send comments or bug reports to
  * When you figure out what these functions do, document them here.
  */
 
+// The following functions are written in assembly language.
 extern void create_process_asm( void *(*start_routine)( void ), word *stack );
-extern void store_process_asm( word *stack );
-extern void next_process_asm( word *stack );
-extern void switch_process_asm( word *stack );
 extern void __interrupt Timer_ISR_asm( void );
 
 void *idle_thread( void );
@@ -46,7 +45,7 @@ unsigned int sch_count = 0;
 static bool first_time = true;
 
 // Timer interrupt function.
-word far* Schedule( word far* p )
+word far *Schedule( word far *p )
 {
     processID idle;
     process *current_process;
@@ -104,7 +103,7 @@ void *idle_thread( void )
 }
 
 
-//create idel thread
+// Create idle thread.
 void create_idle_thread( void )
 {
     processID idleid;
@@ -114,16 +113,16 @@ void create_idle_thread( void )
 }
 
 
-//initialize the timer interrupt
+// Initialize the timer interrupt.
 void initialize_timerISR( void )
 {
+    create_idle_thread( );  // Be sure the thread exists before we activate context switching.
     IVT = MK_FP( 0, 0 );
     IVT[TimerIRQ] = Timer_ISR_asm;
-    create_idle_thread( );
 }
 
 
-//initialize_timer_frequency to ~2.8ms
+// Initialize_timer_frequency to ~2.8ms.
 void initialize_timer_frequency( void )
 {
     outp( 0x42, 0x3c );
@@ -166,4 +165,3 @@ int random_seed( )
 {
     return (int)inp( 0x40 );
 }
-

@@ -15,7 +15,6 @@ Please send comments or bug reports to
     Peter.Chapin@vtc.vsc.edu
 ****************************************************************************/
 
-
 #ifndef XTHREAD_H
 #define XTHREAD_H
 
@@ -24,9 +23,12 @@ Please send comments or bug reports to
 
 #define STACK_SIZE 512  // In words
 
-// Make sure all members of the following structures are byte aligned.
-// These structures are accessed from assembly language in xt_asm.asm
-// and that code depends on these structurs being layed out a certain way.
+// Make sure all members of the following structures are byte aligned. These structures are
+// accessed from assembly language in xt_asm.asm and that code depends on these structurs being
+// layed out a certain way.
+//
+// NOTE: It does not appear that any of these structures are used in xt_asm.asm so perhaps the
+// comment above is obsolete and specific packing is no longer required here. --pchapin.
 //
 #pragma pack(push, 1);
 typedef struct {
@@ -34,13 +36,13 @@ typedef struct {
 } processID;
 
 typedef struct {
-    word      far* stack;
+    word      far *stack;
     bool      runnable;
     processID pid;
 } process;
 
 typedef struct {
-    bool locked;  // false if available, true if locked
+    bool locked;  // False if available, true if locked.
     bool waiting[MAX_THREADS];
     int  waiting_index;
 } xthread_mutex_t;

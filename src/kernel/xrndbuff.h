@@ -11,8 +11,8 @@ Please send comments or bug reports to
     Phoenix Team
     c/o Peter C. Chapin
     Vermont Technical College
-    Randolph Center, VT 05061
-    Peter.Chapin@vtc.vsc.edu
+    Williston, VT 05495
+    PChapin@vtc.vsc.edu
 ****************************************************************************/
 
 #ifndef XROUNDBUFF_H

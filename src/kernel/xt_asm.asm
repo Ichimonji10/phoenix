@@ -79,7 +79,7 @@ create_process_asm_ PROC near
         push    cs        ; Thread starting address in cs:ax
         push    ax
 
-        mov     cx, 0     ; Initial value for GPRs. The weird below order matches OW.
+        mov     cx, 0     ; Initial value for GPRs. The weird order below matches OW.
         push    cx        ; ax
         push    cx        ; cx
         push    cx        ; dx

@@ -1,8 +1,7 @@
 /****************************************************************************
-FILE          : xthread.c
-LAST REVISION : 2008-01-24
-SUBJECT       : Implemenation of Phoenix threading.
-PROGRAMMER    : (C) Copyright 2008  The Phoenix Team.
+FILE      : xthread.c
+SUBJECT   : Implementation of Phoenix threading.
+PROGRAMMER: (C) Copyright 2008  The Phoenix Team.
 
 This file implements Phoenix threading.
 
@@ -11,8 +10,8 @@ Please send comments or bug reports to
     Phoenix Team
     c/o Peter C. Chapin
     Vermont Technical College
-    Randolph Center, VT 05061
-    Peter.Chapin@vtc.vsc.edu
+    Williston, VT 05495
+    PChapin@vtc.vsc.edu
 ****************************************************************************/
 
 #include "xthread.h"
@@ -20,19 +19,20 @@ Please send comments or bug reports to
 #include "debug.h"
 #include "xstddef.h"
 
-/*! \file xtrhead.c Thread handling functions.
+/*! \file xthread.c Thread handling functions.
  *
- * When you figure out what these functions do, document them here.
+ * Phoenix uses the terms "process" and "thread" interchangeably. The functions in this file
+ * support process/thread creation, management, and synchronization.
  */
 
 #define COLOR 0x04
 
-word stacks[MAX_THREADS][STACK_SIZE];
-unsigned int lock_counter = 0;
-bool run_idle = false;
+static word stacks[MAX_THREADS][STACK_SIZE];
+static unsigned int lock_counter = 0;
+static bool run_idle = false;
 
+// The following function is written in assembly language.
 extern void create_process_asm( void *(*start_routine)( void ), word *stack );
-extern void next_process_asm( word *stack );
 
 // Disable thread and store the current context into stack
 int xthread_create( processID id, void *(*start_routine)( void ) )
@@ -53,37 +53,67 @@ int xthread_create( processID id, void *(*start_routine)( void ) )
     //
     new_process.stack -= 12;
   
-    if( add_process(&new_process) != 0 ) rc = 1;
+    if( add_process( &new_process ) != 0 ) rc = 1;
     return rc;
 }
 
 
-// Stored all the register value than suspend the current thread, after the thread suspended the
-// next runnable thread will be called.
-//
+//! Marks the specified process as suspended (not runnable).
+/*!
+ * If the given process ID does not correspond to a defined process, there is no effect. Also
+ * suspending an already suspended process has no effect.
+ *
+ * \param id The process ID of the process to suspend.
+ * \return 0 if successful and non-zero if the given ID is invalid.
+ */
 int xthread_suspend( processID id )
 {
+    int rc = -1;
     process *current_process;
  
     current_process = get_process( id );
-    current_process->runnable = false;
-    return 0;
+    if( current_process != NULL ) {
+        current_process->runnable = false;
+        rc = 0;
+    }
+    return rc;
 }
 
 
+//! Marks the specified process as runnable.
+/*!
+ * If the given process ID does not correspond to a defined process, there is no effect. Also
+ * resuming a runnable process has no effect.
+ *
+ * \param id The process ID of the process to resume.
+ * \return 0 if successful and non-zero if the given ID is invalid.
+ */
 int xthread_resume( processID id )
 {
+    int rc = -1;
     process *current_process;
  
     current_process = get_process( id );
-    current_process->runnable = true;
-    return 0;
+    if( current_process != NULL ) {
+        current_process->runnable = true;
+        rc = 0;
+    }
+    return rc;
 }
 
 
+//! Initializes an xthread_mutex_t object.
+/*!
+ * Every xthread_mutex_t must be initialized before it can be used. Although mutexes can be
+ * initialized more than once, initializing a mutex that is in active use causes undefined
+ * behavior.
+ *
+ * \param mutex A pointer to the object to be initialized.
+ * \return 0 if successful and non-zero if the initialization failed.
+ */
 int xthread_mutex_init( xthread_mutex_t *mutex )
 {
-    int i = 0;
+    int i;
   
     mutex->locked = false;
     for( i = 0; i < MAX_THREADS; i++ ) {
@@ -95,9 +125,19 @@ int xthread_mutex_init( xthread_mutex_t *mutex )
 }
 
 
+//! Locks an xthread mutex.
+/*!
+ * Attempts to acquire a lock on the given mutex. If the mutex is already locked the process
+ * with the given ID is suspected. Recursive locking is not supported. If a thread attempts
+ * to lock a mutex it already has locked, the thread will suspect anyway.
+ *
+ * \param mutex A pointer to the mutex to lock. The mutex should be initialized.
+ * \param proc The process ID of the thread to suspend if the mutex is already locked.
+ * \return 0 if successful and non-zero otherwise.
+ */
 int xthread_mutex_lock( xthread_mutex_t *mutex, processID proc )
 {
-    int return_value = 1;
+    int rc = -1;
     
     disable_interrupts( );
     if( mutex->locked == false ) {
@@ -106,39 +146,49 @@ int xthread_mutex_lock( xthread_mutex_t *mutex, processID proc )
         enable_interrupts( );
 	
         debug_print( lock_counter++, 39, "u", COLOR );
-	
-        return_value = 0;
+        rc = 0;
     }
     else {
         xthread_suspend( proc );
         mutex->waiting[proc.pid] = true;
+        enable_interrupts( );
 	
         debug_print( lock_counter++, 39, "l", COLOR );
-    
-        enable_interrupts( );
         xthread_switch_thread( );
-        return_value = xthread_mutex_lock( mutex, proc );
+        rc = xthread_mutex_lock( mutex, proc );
     }
-    return return_value;
+    return rc;
 }
 
 
+//! Unlocks an xthread mutex.
+/*!
+ * Selects exactly one process waiting on the mutex (if any) and resumes it. If no processes
+ * are waiting on the mutex, there is no effect.
+ *
+ * \param mutex A pointer to the mutex to unlock. The mutex must be initialized but it need not
+ * be locked.
+ * \return 0 if successful and non-zero otherwise.
+ */
 int xthread_mutex_unlock( xthread_mutex_t *mutex )
 {
     processID proc;
     int counter = 0;
   
+    // Scan over the waiting list looking for a process that is waiting on this mutex.
     while( mutex->waiting[mutex->waiting_index] != true && counter < MAX_THREADS ) {
         mutex->waiting_index++;
         counter++;
-    
+   
+        // Wrap the waiting index around when necessary.
         if( mutex->waiting_index == MAX_THREADS ) {
             mutex->waiting_index = 0;
         }
     }
   
-    mutex->locked = false;
+    mutex->locked = false;  // If a process was waiting it will immediately relock.
     if( counter != MAX_THREADS ) {
+        mutex->waiting[mutex->waiting_index] = false;
         proc.pid = mutex->waiting_index;
         xthread_resume( proc );
     }

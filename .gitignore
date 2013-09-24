@@ -4,6 +4,7 @@
 *.err
 *.exe
 *.lib
+*.bak
 
 # Disk image files.
 *.iso

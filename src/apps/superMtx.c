@@ -1,8 +1,7 @@
 /****************************************************************************
-FILE          : superMtx.c
-LAST REVISION : 2008-03-06
-SUBJECT       : Tests thread creation and context switching.
-PROGRAMMER    : (C) Copyright 2008  The Phoenix Team.
+FILE      : superMtx.c
+SUBJECT   : Tests thread creation and context switching.
+PROGRAMMER: (C) Copyright 2008  The Phoenix Team.
 
 This test will exercise the mutexes by quickly locking and unlocking in two threads. This
 functionality is basic to the thread support and must work correctly before the message passing
@@ -13,22 +12,23 @@ Please send comments or bug reports to
     Phoenix Team
     c/o Peter C. Chapin
     Vermont Technical College
-    Randolph Center, VT 05061
-    Peter.Chapin@vtc.vsc.edu
+    Williston, VT 05495
+    PChapin@vtc.vsc.edu
 ****************************************************************************/
+
+#include "message.h"
+#include "video.h"
+#include "xbuffer.h"
+#include "xstddef.h"
+#include "xstring.h"
 #include "xthread.h"
 #include "xtimer.h"
-#include "video.h"
-#include "xstddef.h"
-#include "message.h"
-#include "xbuffer.h"
-#include "xstring.h"
 
-#define TRACE_COLUMN 60
-#define OUTPUT_COLUMN 10
-#define COLOR 0x04
+#define TRACE_COLUMN    60
+#define OUTPUT_COLUMN   10
+#define COLOR         0x04
 
-int trace_counter = 0;
+int trace_counter  = 0;
 int output_counter = 0;
 processID id1;
 processID id2;
@@ -41,10 +41,10 @@ xthread_mutex_t mutex;
 void *thread1( void );
 void *thread2( void );
 
-int main( )
+int main( void )
 {  
-    id1.pid = 0;
-    id2.pid = 1;
+    id1.pid = 1;
+    id2.pid = 2;
 	
     clear_screen( );
     print_at( trace_counter++, TRACE_COLUMN, "Start of main", COLOR );

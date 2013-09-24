@@ -69,7 +69,7 @@ int add_process( process *new_proc )
         return 0;	
     }
   
-    // 2 processes with same pid!!
+    // Two processes with same pid!!
     return 1;
 }
 
@@ -93,7 +93,7 @@ void set_idle( )
  * process selected (for example if addProcess() has never been called), this function returns
  * NULL.
  */
-process* get_current( )
+process *get_current( )
 {
     if( current != -1 ) {
         return &xroundbuff[current];
@@ -110,9 +110,12 @@ process* get_current( )
  * \return A pointer to the process structure for the process with the given ID. If there is no
  * process defined for that ID, this function returns NULL.
  */
-process* get_process( processID id )
+process *get_process( processID id )
 { 
-    if( used[id.pid] == true ) {
+    // The value of id.pid should never be out of range. Protecting against undefined behavior.
+    if( id.pid < 0 || id.pid >= MAX_THREADS ) return NULL;
+
+    if( used[id.pid] ) {
         return &xroundbuff[id.pid];
     }
  
@@ -123,26 +126,21 @@ process* get_process( processID id )
 //! Return a pointer to the next defined process.
 /*!
  * This function returns a pointer to the next process that is defined in the round buffer. As a
- * side effect it also records this process for use by setCurrent().
+ * side effect it also records this process for use by set_current().
  *  
  * \return A pointer to the next defined process. If no processes are defined (for example if
- * addProcess() has not yet been called), this function returns NULL.
+ * add_process() has not yet been called), this function returns NULL.
  */
-process* get_next( )
+process *get_next( )
 {
     if( next != -1 ) {
-        next++;
-    
-        // find the next existing process
-        while( used[next] == false ) {
+        do {
             next++;
-    
             if( next == MAX_THREADS ) {
                 next = 0;
             }
-        }
+        } while( used[next] == false );
         return &xroundbuff[next];
-    }
-  
+    }  
     return NULL;
 }
