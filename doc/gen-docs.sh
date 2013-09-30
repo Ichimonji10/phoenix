@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 #
+# Contributor: Jeremy "Ichimonji10" Audet <ichimonji10 at gmail dot com>
+#
 # Generate documentation for Phoenix.
 #
-# At the risk of pedantry: shell scripting is an involved topic, and every wart
-# and lump in this script has a purpose. Recommended reading:
-#
-# * http://mywiki.wooledge.org/BashFAQ/028
-# * http://mywiki.wooledge.org/UsingFind
 
 set -o errexit
 set -o nounset
@@ -24,6 +21,7 @@ to <destdir>, compiling markdown and dot files in the process.
     The directory into which files are placed."
 
 # Fetch arguments from user. Set `srcdir` and `destdir`.
+# Do not set a default `srcdir`. See: http://mywiki.wooledge.org/BashFAQ/028
 if [ -z "${1:-}" ]; then
     echo "$usage"
     exit 1
@@ -37,16 +35,17 @@ else
 fi
 
 # Copy and compile files.
+# For the confused: http://mywiki.wooledge.org/UsingFind#Complex_actions
 #
-# $0: absolute path of file being compiled
-# $1: absolute path of destination directory
+# $1: absolute path of file being compiled
+# $2: absolute path of destination directory
 find "$srcdir" -maxdepth 1 -type f -name '*.md' -exec sh -c '
-    readonly filename="`basename "$0"`"
-    markdown "$0" > "$1/${filename%md}html"
-' {} "$destdir" ';' -o -type f -name '*.dot' -exec sh -c '
-    readonly filename="`basename "$0"`"
-    dot -Tsvg -o "$1/${filename%dot}svg" "$0"
-' {} "$destdir" ';' -o -type f -exec sh -c '
-    readonly filename="`basename "$0"`"
-    cp "$0" "$1/$filename"
-' {} "$destdir" ';'
+    readonly filename="`basename "$1"`"
+    markdown "$1" > "$2/${filename%md}html"
+' _ {} "$destdir" ';' -o -type f -name '*.dot' -exec sh -c '
+    readonly filename="`basename "$1"`"
+    dot -Tsvg -o "$2/${filename%dot}svg" "$1"
+' _ {} "$destdir" ';' -o -type f -exec sh -c '
+    readonly filename="`basename "$1"`"
+    cp "$1" "$2/$filename"
+' _ {} "$destdir" ';'
