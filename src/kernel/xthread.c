@@ -40,6 +40,8 @@ int xthread_create( processID id, void *(*start_routine)( void ) )
     int     rc = 0;
     process new_process;
   
+    new_process.priority = NORMAL;
+    new_process.score = 0;
     new_process.pid = id;
     new_process.runnable = true;
     new_process.stack = stacks[id.pid] + STACK_SIZE;

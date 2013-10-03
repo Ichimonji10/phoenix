@@ -22,6 +22,7 @@ Please send comments or bug reports to
 #include "types.h"
 
 #define STACK_SIZE 512  // In words
+typedef enum {LOW, NORMAL, HIGH} priority_t;
 
 // Make sure all members of the following structures are byte aligned. These structures are
 // accessed from assembly language in xt_asm.asm and that code depends on these structurs being
@@ -36,9 +37,11 @@ typedef struct {
 } processID;
 
 typedef struct {
-    word      far *stack;
-    bool      runnable;
-    processID pid;
+    word       far * stack; // location of stack
+    bool       runnable; // true if thread should be run by scheduler
+    processID  pid; // unique identifier
+    priority_t priority; // used by scheduler
+    int        score; // used by scheduler
 } process;
 
 typedef struct {
