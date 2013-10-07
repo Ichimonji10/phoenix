@@ -42,6 +42,6 @@ bool set_current( processID );
 
 process *get_current( );
 process *get_process( processID );
-process *get_next( ); // FIXME: use an explicit processID
+process *get_next( processID );
 
 #endif

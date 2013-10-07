@@ -126,12 +126,14 @@ process *get_process( processID id )
  * \return A pointer to the next defined process. If no processes are defined (for example if
  * add_process() has not yet been called), this function returns NULL.
  */
-process *get_next( )
+process * get_next( processID id )
 {
-    if( -1 == current ) { return NULL; }
+    int pid = id.pid;
+    if( false == _process_exists(id) ) { return NULL; }
 
     do {
-        current = (current + 1) % MAX_THREADS;
-    } while( false == used[current] );
-    return &xroundbuff[current];
+        pid = ( pid + 1 ) % MAX_THREADS;
+        if( used[pid] ) { return &xroundbuff[pid]; }
+    } while( pid != id.pid );
+    return NULL;
 }

@@ -49,7 +49,6 @@ word far *Schedule( word far *p )
     process * current = get_current( );
     process * candidate;
     processID idle;
-    int i;
 
     if( NULL == current ) {
         print_at( count++, col, "thread pointing to NULL", 0x04 );
@@ -58,15 +57,17 @@ word far *Schedule( word far *p )
     }
 
     // Search entire ringbuffer for a new thread to run. Return current thread
-    // is no other runnable process exists and the current process is runnable.
+    // if no other runnable process exists and the current process is runnable.
+    candidate = current;
     do {
-        candidate = get_next( );
+        candidate = get_next( candidate->pid );
         if( true == candidate->runnable ) {
+            set_current( candidate->pid );
             return candidate->stack;
         }
     } while( candidate->pid.pid != current->pid.pid );
 
-    // No runnable threads found. Run the idle process (It isn't marked as
+    // No runnable process was found. Run the idle process. (it's not marked as
     // runnable?)
     idle.pid = IDLE;
     candidate = get_process( idle );
