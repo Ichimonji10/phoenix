@@ -55,7 +55,6 @@ word far *Schedule( word far *p )
 
     if( first_time ) {
         current_process = get_next( );
-        set_current( );
         first_time = false;
         return current_process->stack;
     }
@@ -86,11 +85,9 @@ word far *Schedule( word far *p )
     }
 
     if( next_process->pid.pid == current_process->pid.pid ) {
-        set_current( );
         return p; // Return to the assembly language.
     }
 
-    set_current( );
     return next_process->stack;
 }
 

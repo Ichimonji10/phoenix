@@ -69,13 +69,6 @@ int add_process( process *new_proc )
 }
 
 
-//! Sets the current process to the last process found by getNext()
-void set_current( )
-{
-    ; // no-op
-}
-
-
 void set_idle( )
 {
     current = 0;
