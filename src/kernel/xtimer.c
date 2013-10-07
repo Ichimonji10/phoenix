@@ -70,7 +70,7 @@ word far *Schedule( word far *p )
     // runnable?)
     idle.pid = IDLE;
     candidate = get_process( idle );
-    set_idle( ); // update "current" index. Make get_process do this automatic
+    set_current( candidate->pid );
     return candidate->stack;
 }
 

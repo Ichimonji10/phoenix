@@ -25,13 +25,11 @@ Please send comments or bug reports to
  *
  * `add_process()` should be called before any other function, or else undefined
  * behaviour will occur. When `add_process()` is called for the first time, an
- * index is initialized which points to that process in the ringbuffer. Other
- * functions in this file (e.g. `get_next()`) make use of the index. The word
- * "current" (like in `get_current()`) refers to the process being pointed to by
- * the index.
+ * index is initialized which points to the location of the new process in the
+ * ringbuffer. Subsequent calls to `add_process()` do not affect the index.
  *
- * The index is maintained internally, and users of this library should not
- * manipulate it.
+ * Only `add_process()` and `set_current()` affect the index. See the function
+ * definitions for more details.
  */
 
 #ifndef XROUNDBUFF_H
@@ -40,11 +38,10 @@ Please send comments or bug reports to
 #include "xthread.h"
 
 int  add_process( process * );
-void set_current( );
-void set_idle( );
+bool set_current( processID );
 
 process *get_current( );
 process *get_process( processID );
-process *get_next( );
+process *get_next( ); // FIXME: use an explicit processID
 
 #endif

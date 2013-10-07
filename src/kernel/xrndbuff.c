@@ -69,9 +69,17 @@ int add_process( process *new_proc )
 }
 
 
-void set_idle( )
-{
-    current = 0;
+// Make the ringbuffer index point to the process with id `id`.
+//
+// \return true on success, else false.
+bool set_current( processID id ) {
+    // FIXME: turn into boolean function
+    // The value of id.pid should never be out of range. Protecting against undefined behavior.
+    if( id.pid < 0 || id.pid >= MAX_THREADS || false == used[id.pid] ) {
+        return false;
+    }
+    current = id.pid;
+    return true;
 }
 
 
@@ -97,6 +105,7 @@ process *get_current( )
  */
 process *get_process( processID id )
 { 
+    // FIXME: turn into boolean function
     // The value of id.pid should never be out of range. Protecting against undefined behavior.
     if( id.pid < 0 || id.pid >= MAX_THREADS || false == used[id.pid] ) {
         return NULL;
