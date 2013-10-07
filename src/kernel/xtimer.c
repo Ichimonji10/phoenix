@@ -47,48 +47,35 @@ static bool first_time = true;
 // Timer interrupt function.
 word far *Schedule( word far *p )
 {
+    process * current = get_current( );
+    process * candidate;
     processID idle;
-    process *current_process;
-    process *next_process;
+    int i;
 
-    idle.pid = IDLE;
-
-    if( first_time ) {
-        current_process = get_next( );
-        first_time = false;
-        return current_process->stack;
-    }
-
-    current_process = get_current( );
-
-    if( current_process == NULL ) {
+    if( NULL == current ) {
         print_at( count++, col, "thread pointing to NULL", 0x04 );
+        print_at( count++, col, "(did you call add_process()?)", 0x04 );
         return p;
     }
 
-    current_process->stack = p;
+    if( first_time ) {
+        first_time = false;
+        candidate = get_next( );
+        return candidate->stack;
+    }
 
-    next_process = get_next( );
-
-    // Search for next runnable thread
-    while( next_process->runnable == false || next_process->pid.pid == IDLE ) {
-        debug_print( sch_count++, 46, "SCH", 0x03 );
-        // Run idle thread if it loop around the xroundbuffer and no runnable thread.
-        if( next_process->pid.pid == current_process->pid.pid ) {
-            next_process = get_process( idle );
-
-            set_idle( );
-            debug_print( sch_count++, 46, "IDL", 0x03 );
-            return next_process->stack;
+    candidate = get_next( );
+    while( candidate->pid.pid != current->pid.pid ) {
+        if( true == candidate->runnable ) {
+            return candidate->stack;
         }
-        next_process = get_next( );
     }
 
-    if( next_process->pid.pid == current_process->pid.pid ) {
-        return p; // Return to the assembly language.
-    }
-
-    return next_process->stack;
+    // no suitable candidate found. Run idle
+    idle.pid = IDLE;
+    candidate = get_process( idle );
+    set_idle( ); // update "current" index. Make get_process do this automatic
+    return candidate->stack;
 }
 
 
