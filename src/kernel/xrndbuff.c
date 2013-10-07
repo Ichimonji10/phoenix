@@ -15,10 +15,6 @@ Please send comments or bug reports to
     Peter.Chapin@vtc.vsc.edu
 ****************************************************************************/
 
-#include "xrndbuff.h"
-#include "xstddef.h"
-#include "types.h"
-
 /*! \file xrndbuff.c Circular buffer holding process information.
  *
  * This file contains the functions used for manipulating a circular buffer of process
@@ -26,10 +22,26 @@ Please send comments or bug reports to
  * "next" runnable entry in the round buffer is used.
  */
 
+#include "xrndbuff.h"
+#include "xstddef.h"
+#include "types.h"
+
 process xroundbuff[MAX_THREADS]; //!< A circular buffer of process info structs
 bool used[MAX_THREADS]; //!< Flags indicating which ringbuffer slots are used.
 int size    =  0;  //!< Number of defined process structures in the buffer.
 int current = -1;  //!< Buffer index of currently selected process.
+
+// Check whether process `id` exists in the roundbuffer.
+//
+// \return true if `id.pid` is sane and a the corresponding roundbuffer location
+// is in use.
+bool _process_exists( processID id ) {
+    int index = id.pid;
+    if( index < 0 || index >= MAX_THREADS || false == used[index] ) {
+        return false;
+    }
+    return true;
+}
 
 //! Add a process to the round buffer.
 /*!
@@ -73,11 +85,7 @@ int add_process( process *new_proc )
 //
 // \return true on success, else false.
 bool set_current( processID id ) {
-    // FIXME: turn into boolean function
-    // The value of id.pid should never be out of range. Protecting against undefined behavior.
-    if( id.pid < 0 || id.pid >= MAX_THREADS || false == used[id.pid] ) {
-        return false;
-    }
+    if( false == _process_exists(id) ) { return false; }
     current = id.pid;
     return true;
 }
@@ -105,11 +113,7 @@ process *get_current( )
  */
 process *get_process( processID id )
 { 
-    // FIXME: turn into boolean function
-    // The value of id.pid should never be out of range. Protecting against undefined behavior.
-    if( id.pid < 0 || id.pid >= MAX_THREADS || false == used[id.pid] ) {
-        return NULL;
-    }
+    if( false == _process_exists(id) ) { return NULL; }
     return &xroundbuff[id.pid];
 }
 
