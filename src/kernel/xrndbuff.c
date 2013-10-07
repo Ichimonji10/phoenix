@@ -26,11 +26,10 @@ Please send comments or bug reports to
  * "next" runnable entry in the round buffer is used.
  */
 
-process xroundbuff[MAX_THREADS];  //!< The actual circular buffer.
-bool    used[MAX_THREADS];        //!< An array of flags indicate which buffer slots are used.
-
+process xroundbuff[MAX_THREADS]; //!< A circular buffer of process info structs
+bool used[MAX_THREADS]; //!< Flags indicating which ringbuffer slots are used.
 int size    =  0;  //!< Number of defined process structures in the buffer.
-int current = -1;  //!< Index in the buffer of "current" process.
+int current = -1;  //!< Buffer index of currently selected process.
 
 //! Add a process to the round buffer.
 /*!
@@ -46,10 +45,10 @@ int current = -1;  //!< Index in the buffer of "current" process.
  */
 int add_process( process *new_proc )
 {
-    int i = 0;
+    int i;
 
     // Initialize all pids to unused first time this is called.
-    if( size == 0 ) {
+    if( 0 == size ) {
         for( i = 0; i < MAX_THREADS; i++ ) {
             xroundbuff[i].pid.pid = -1;
             used[i] = false;
@@ -58,16 +57,15 @@ int add_process( process *new_proc )
         current = new_proc->pid.pid;
     }
 
-    // Make sure the processID is not in use.
-    if( used[new_proc->pid.pid] == false ) {
-        xroundbuff[new_proc->pid.pid] = *new_proc;
-        used[new_proc->pid.pid] = true;
-        size++;
-        return 0;	
+    // Throw an error if `new_proc` has the same ID as an existing process.
+    if( true == used[new_proc->pid.pid] ) {
+        return 1;
     }
-  
-    // Two processes with same pid!!
-    return 1;
+
+    xroundbuff[new_proc->pid.pid] = *new_proc;
+    used[new_proc->pid.pid] = true;
+    size++;
+    return 0;
 }
 
 
@@ -92,11 +90,8 @@ void set_idle( )
  */
 process *get_current( )
 {
-    if( current != -1 ) {
-        return &xroundbuff[current];
-    }
-  
-    return NULL;
+    if( -1 == current ) { return NULL; }
+    return &xroundbuff[current];
 }
 
 
@@ -110,13 +105,10 @@ process *get_current( )
 process *get_process( processID id )
 { 
     // The value of id.pid should never be out of range. Protecting against undefined behavior.
-    if( id.pid < 0 || id.pid >= MAX_THREADS ) return NULL;
-
-    if( used[id.pid] ) {
-        return &xroundbuff[id.pid];
+    if( id.pid < 0 || id.pid >= MAX_THREADS || false == used[id.pid] ) {
+        return NULL;
     }
- 
-    return NULL;
+    return &xroundbuff[id.pid];
 }
 
 
@@ -134,6 +126,6 @@ process *get_next( )
 
     do {
         current = (current + 1) % MAX_THREADS;
-    } while( used[current] == false );
+    } while( false == used[current] );
     return &xroundbuff[current];
 }
