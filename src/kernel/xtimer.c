@@ -42,7 +42,6 @@ static int col = 8;
 unsigned int sch_count = 0;
 // static unsigned long deadbeef_seed = 0;
 // static unsigned long deadbeef_beef = 0xdeadbeef;
-static bool first_time = true;
 
 // Timer interrupt function.
 word far *Schedule( word far *p )
@@ -54,24 +53,21 @@ word far *Schedule( word far *p )
 
     if( NULL == current ) {
         print_at( count++, col, "thread pointing to NULL", 0x04 );
-        print_at( count++, col, "(did you call add_process()?)", 0x04 );
+        print_at( count++, col, "has add_process() been called?", 0x04 );
         return p;
     }
 
-    if( first_time ) {
-        first_time = false;
+    // Search entire ringbuffer for a new thread to run. Return current thread
+    // is no other runnable process exists and the current process is runnable.
+    do {
         candidate = get_next( );
-        return candidate->stack;
-    }
-
-    candidate = get_next( );
-    while( candidate->pid.pid != current->pid.pid ) {
         if( true == candidate->runnable ) {
             return candidate->stack;
         }
-    }
+    } while( candidate->pid.pid != current->pid.pid );
 
-    // no suitable candidate found. Run idle
+    // No runnable threads found. Run the idle process (It isn't marked as
+    // runnable?)
     idle.pid = IDLE;
     candidate = get_process( idle );
     set_idle( ); // update "current" index. Make get_process do this automatic
