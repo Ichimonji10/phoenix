@@ -31,7 +31,6 @@ bool    used[MAX_THREADS];        //!< An array of flags indicate which buffer s
 
 int size    =  0;  //!< Number of defined process structures in the buffer.
 int current = -1;  //!< Index in the buffer of "current" process.
-int next    = -1;  //!< Index in the buffer of next process to run.
 
 //! Add a process to the round buffer.
 /*!
@@ -55,10 +54,8 @@ int add_process( process *new_proc )
             xroundbuff[i].pid.pid = -1;
             used[i] = false;
         }
-    
-        // If the new process is the first process, it is both current and next.
+        // The first process in the ringbuffer is the current process
         current = new_proc->pid.pid;
-        next = new_proc->pid.pid;
     }
 
     // Make sure the processID is not in use.
@@ -77,7 +74,7 @@ int add_process( process *new_proc )
 //! Sets the current process to the last process found by getNext()
 void set_current( )
 {
-    current = next;
+    ; // no-op
 }
 
 
@@ -133,14 +130,10 @@ process *get_process( processID id )
  */
 process *get_next( )
 {
-    if( next != -1 ) {
-        do {
-            next++;
-            if( next == MAX_THREADS ) {
-                next = 0;
-            }
-        } while( used[next] == false );
-        return &xroundbuff[next];
-    }  
-    return NULL;
+    if( -1 == current ) { return NULL; }
+
+    do {
+        current = (current + 1) % MAX_THREADS;
+    } while( used[current] == false );
+    return &xroundbuff[current];
 }
