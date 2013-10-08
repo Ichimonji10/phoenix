@@ -47,9 +47,9 @@ unsigned int sch_count = 0;
 word far *Schedule( word far *p )
 {
     process const * const current = get_current( );
-    process * candidate; // a candidate for which thread should run next
-    process * choice; // the choice for which thread should run next
-    processID idle;
+    process * candidate = get_current( ); // Candidate for next runnable process
+    process * choice; // Choice for next runnable process
+    processID idle; // Used to find the idle thread
 
     if( NULL == current ) {
         print_at( count++, col, "thread pointing to NULL", 0x04 );
@@ -57,12 +57,10 @@ word far *Schedule( word far *p )
         return p;
     }
 
-    // make a default choice...
+    // Make a default choice...
     idle.pid = IDLE;
     choice = get_process( idle );
-
-    // ... then see if any other suitable candidates exist
-    candidate = current;
+    // ... then see if any other suitable candidates exist.
     do {
         candidate = get_next( candidate->pid );
         if( true == candidate->runnable ) {

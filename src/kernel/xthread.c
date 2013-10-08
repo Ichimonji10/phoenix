@@ -29,7 +29,6 @@ Please send comments or bug reports to
 
 static word stacks[MAX_THREADS][STACK_SIZE];
 static unsigned int lock_counter = 0;
-static bool run_idle = false;
 
 // The following function is written in assembly language.
 extern void create_process_asm( void *(*start_routine)( void ), word *stack );
