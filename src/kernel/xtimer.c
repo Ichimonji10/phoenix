@@ -43,7 +43,28 @@ unsigned int sch_count = 0;
 // static unsigned long deadbeef_seed = 0;
 // static unsigned long deadbeef_beef = 0xdeadbeef;
 
-// Timer interrupt function.
+//! Decide which process should run next and return it's stack. Timer interrupt.
+/*!
+ * The following logic is used to select the next process:
+ *
+ * 1. Increment the score of each runnable process. The greater a process's
+ *    priority, the greater the increment.
+ * 2. Select the process with the highest score. If multiple processes have the
+ *    same score, select the first process after the "current" process, where
+ *    the "current" process is the process pointed to by the ringbuffer index.
+ * 3. Make the selected process the "current" process, set it's score to zero
+ *    and run it.
+ *
+ * Note that only runnable processes are given points. If non-runnable processs
+ * are given points, they will attain insane scores. This could be problematic
+ * if numerous non-runnable processes all became runnable at the same time
+ *
+ * This function is inefficient: the score of *every* process is bumped whenever
+ * the function is called. As MAX_THREADS grows, the problem will only get
+ * worse. Better solutions should be considered. One possible solution is to
+ * examine only a limited number of processes each time this interrupt occurs,
+ * rather than examining all processes.
+ */
 word far *Schedule( word far *p )
 {
     process const * const current = get_current( );
@@ -65,9 +86,7 @@ word far *Schedule( word far *p )
         candidate = get_next( candidate->pid );
         if( true == candidate->runnable ) {
             // Bump score before considering a process. This ensures that
-            // `candidate` will always out-score the idle thread. Also, only
-            // give runnable processes points. If non-runnable processes accrue
-            // points, they will attain insane scores.
+            // `candidate` will always out-score the idle thread.
             candidate->score += candidate->priority;
             if( candidate->score > choice->score ) { choice = candidate; }
         }
