@@ -25,7 +25,5 @@ kernel.lib: $(OBJ)
 <<
 
 clean: .SYMBOLIC
-    rm -f *.obj *.err kernel.lib
-
-
+    rm -f *.obj *.o *.err *.exe *.lib *.bak
 

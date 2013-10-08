@@ -32,6 +32,7 @@ export MTOOLSRC="$rootdir"/images/mtoolsrc
 #=======================================
 
 cd "$rootdir"/src
+wmake clean
 wmake
 
 cd "$rootdir"/src/tools
