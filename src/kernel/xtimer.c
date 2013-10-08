@@ -46,33 +46,38 @@ unsigned int sch_count = 0;
 // Timer interrupt function.
 word far *Schedule( word far *p )
 {
-    process * current = get_current( );
-    process * candidate;
+    process const * const current = get_current( );
+    process * candidate; // a candidate for which thread should run next
+    process * choice; // the choice for which thread should run next
     processID idle;
 
     if( NULL == current ) {
         print_at( count++, col, "thread pointing to NULL", 0x04 );
-        print_at( count++, col, "has add_process() been called?", 0x04 );
+        print_at( count++, col, "(has add_process() been called?)", 0x04 );
         return p;
     }
 
-    // Search entire ringbuffer for a new thread to run. Return current thread
-    // if no other runnable process exists and the current process is runnable.
+    // make a default choice...
+    idle.pid = IDLE;
+    choice = get_process( idle );
+
+    // ... then see if any other suitable candidates exist
     candidate = current;
     do {
         candidate = get_next( candidate->pid );
         if( true == candidate->runnable ) {
-            set_current( candidate->pid );
-            return candidate->stack;
+            // Bump score before considering a process. This ensures that
+            // `candidate` will always out-score the idle thread. Also, only
+            // give runnable processes points. If non-runnable processes accrue
+            // points, they will attain insane scores.
+            candidate->score += candidate->priority;
+            if( candidate->score > choice->score ) { choice = candidate; }
         }
     } while( candidate->pid.pid != current->pid.pid );
 
-    // No runnable process was found. Run the idle process. (it's not marked as
-    // runnable?)
-    idle.pid = IDLE;
-    candidate = get_process( idle );
-    set_current( candidate->pid );
-    return candidate->stack;
+    choice->score = 0;
+    set_current( choice->pid ); // update ringbuffer index
+    return choice->stack;
 }
 
 
