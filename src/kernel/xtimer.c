@@ -67,7 +67,7 @@ unsigned int sch_count = 0;
  */
 word far *Schedule( word far *p )
 {
-    process const * const current = get_current( );
+    process * const current = get_current( );
     process * candidate = get_current( ); // Candidate for next runnable process
     process * choice; // Choice for next runnable process
     processID idle; // Used to find the idle thread
@@ -77,6 +77,8 @@ word far *Schedule( word far *p )
         print_at( count++, col, "(has add_process() been called?)", 0x04 );
         return p;
     }
+    // What does this do? It is necessary for test program 1 to function.
+    current->stack = p;
 
     // Make a default choice...
     idle.pid = IDLE;
